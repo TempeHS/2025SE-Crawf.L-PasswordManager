@@ -1,0 +1,7 @@
+{
+	"terminal.integrated.defaultProfile.windows": "Git Bash",
+	"terminal.integrated.cursorStyle": "underline",
+	"terminal.integrated.cursorBlinking": true,
+	"github.copilot.chat.terminalChatLocation": "quickChat",
+	"github.copilot.chat.agent.thinkingTool": true,
+}
