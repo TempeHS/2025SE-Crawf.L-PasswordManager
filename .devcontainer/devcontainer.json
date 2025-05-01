@@ -6,7 +6,7 @@
 		"cpus": 4
 	},
 	"waitFor": "onCreateCommand",
-	"updateContentCommand": "python -m pip install --upgrade pip && python -m pip install -r requirements.txt --upgrade", // ensure that packages are installed
+	"updateContentCommand": "python -m pip install --upgrade pip && python -m pip install -r requirements.txt --upgrade",
 	"postCreateCommand": "apt-get update && apt-get install -y python3 python3-pip",
 	"postAttachCommand": {},
 	"portsAttributes": {
