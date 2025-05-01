@@ -6,6 +6,6 @@ import sys
 app = QApplication(sys.argv)
 
 window = QPushButton("Push Me")
-window.show()  # by default the windows doesn't show
+window.show()  # The window is not visible by default; call show() to display it
 
 app.exec()
