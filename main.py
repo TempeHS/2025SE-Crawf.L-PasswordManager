@@ -28,7 +28,7 @@ class SimpleApp(QWidget):
         # Add an input field
         self.input_field = QLineEdit()
         self.input_field.setSizePolicy(
-            QLineEdit.SizePolicy.Expanding, QLineEdit.SizePolicy.Fixed
+            QLineEdit.sizePolicy.Expanding, QLineEdit.sizePolicy.Fixed
         )
         self.input_field.setTextMargins(
             0, 0, 0, 0
