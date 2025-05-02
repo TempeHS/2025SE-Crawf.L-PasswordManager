@@ -5,7 +5,7 @@ import sys
 
 app = QApplication(sys.argv)
 
-window = QPushButton("Push Me")
-window.show()  # The window is not visible by default; call show() to display it
+button = QPushButton("Push Me")
+button.show()  # The window is not visible by default; call show() to display it
 
 app.exec()
