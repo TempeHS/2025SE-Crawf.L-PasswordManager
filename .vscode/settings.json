@@ -4,4 +4,10 @@
 	"terminal.integrated.cursorBlinking": true,
 	"github.copilot.chat.terminalChatLocation": "quickChat",
 	"github.copilot.chat.agent.thinkingTool": true,
+	"editor.formatOnSave": false,
+	"editor.formatOnPaste": false,
+	// "[yaml]": {
+	// 	"editor.tabSize": 2,
+	// 	"editor.insertSpaces": true
+	// }
 }
