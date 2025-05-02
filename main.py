@@ -1,11 +1,49 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
-
-# Only needed for access to command line arguments
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QMessageBox,
+)
 import sys
 
-app = QApplication(sys.argv)
 
-button = QPushButton("Push Me")
-button.show()  # The window is not visible by default; call show() to display it
+class SimpleApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.init_ui()
 
-app.exec()
+    def init_ui(self):
+        self.setWindowTitle("Simple App")
+
+        # Create layout
+        layout = QVBoxLayout()
+
+        # Add a label
+        self.label = QLabel("Enter some text:")
+        layout.addWidget(self.label)
+
+        # Add an input field
+        self.input_field = QLineEdit()
+        layout.addWidget(self.input_field)
+
+        # Add a submit button
+        self.submit_button = QPushButton("Submit")
+        self.submit_button.clicked.connect(self.show_dialog)
+        layout.addWidget(self.submit_button)
+
+        # Set the layout for the main window
+        self.setLayout(layout)
+
+    def show_dialog(self):
+        text = self.input_field.text()
+        QMessageBox.information(self, "Submitted", f"Submitted text: {text}")
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SimpleApp()
+    window.show()
+    app.exec()
