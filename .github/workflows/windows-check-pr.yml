@@ -28,3 +28,6 @@ jobs:
 
       - name: Test build executable
         run: pyinstaller --noconfirm main.spec
+
+      - name: Report success
+        run: echo "status=success" >> $GITHUB_OUTPUT
