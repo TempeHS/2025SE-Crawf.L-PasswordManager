@@ -42,7 +42,8 @@ class SimpleApp(QWidget):
         QMessageBox.information(self, "Submitted", f"Submitted text: {text}")
 
 
-app = QApplication(sys.argv)
-window = SimpleApp()
-window.show()
-app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SimpleApp()
+    window.show()
+    app.exec()
