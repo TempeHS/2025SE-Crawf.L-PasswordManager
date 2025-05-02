@@ -30,4 +30,4 @@ jobs:
         run: pyinstaller --noconfirm main.spec
 
       - name: Report success
-        run: echo "::set-output name=status::success"
+        run: echo "status=success" >> $GITHUB_OUTPUT
