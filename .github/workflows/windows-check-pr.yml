@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
@@ -28,3 +28,9 @@ jobs:
 
       - name: Test build executable
         run: pyinstaller --noconfirm main.spec
+
+      - name: Upload executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-executable
+          path: dist/  # Adjust this path to the directory where the .exe file is generated
