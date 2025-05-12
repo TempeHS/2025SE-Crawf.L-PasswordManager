@@ -32,5 +32,5 @@ jobs:
       - name: Upload executable artifact
         uses: actions/upload-artifact@v4
         with:
-          name: built-executable
-          path: dist/  # Adjust this path to the directory where the .exe file is generated
+          name: built-executable-PR_${{ github.event.pull_request.number }}
+          path: dist/
