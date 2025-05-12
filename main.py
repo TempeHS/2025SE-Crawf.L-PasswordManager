@@ -27,6 +27,12 @@ class SimpleApp(QWidget):
 
         # Add an input field
         self.input_field = QLineEdit()
+        self.input_field.setSizePolicy(
+            QLineEdit.sizePolicy.Expanding, QLineEdit.sizePolicy.Fixed
+        )
+        self.input_field.setTextMargins(
+            0, 0, 0, 0
+        )  # Optional: Adjust margins if needed
         layout.addWidget(self.input_field)
 
         # Add a submit button
