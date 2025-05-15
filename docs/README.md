@@ -1,4 +1,4 @@
-# 2025SE-Crawf.L-PasswordManager
+# 2025SE-Crawf.L-PassManaging
 
 [![Build Windows Executable](https://github.com/TempeHS/2025SE-Crawf.L-PasswordManager/actions/workflows/windows-build.yml/badge.svg)](https://github.com/TempeHS/2025SE-Crawf.L-PasswordManager/actions/workflows/windows-build.yml)
 
