@@ -1,4 +1,4 @@
-name: Build Windows Executable
+name: Build Executable
 
 on:
   push:
@@ -32,5 +32,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-PasswordManager-v${{ github.sha }}
+          name: windows-PassManaging-v_${{ github.sha }}
           path: dist/
