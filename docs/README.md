@@ -1,6 +1,6 @@
 # 2025SE-Crawf.L-PassManaging
 
-[![Build Windows Executable](https://github.com/TempeHS2025SE-Crawf.L-PassManaging/actions/workflows/windows-build.yml/badge.svg)](https://github.com/TempeHS/2025SE-Crawf.L-2025SE-Crawf.L-PassManaging/actions/workflows/windows-build.yml)
+[![Build Windows Executable](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/windows-build.yml/badge.svg)](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/windows-build.yml)
 
 Password manager for my major
 
