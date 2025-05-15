@@ -1,4 +1,4 @@
-name: Check Windows Executable Build
+name: Check Executable Build
 
 on:
   pull_request:
