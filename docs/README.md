@@ -8,14 +8,22 @@ Password manager for my major
 
 ## Building the Executable on Windows
 
-1. Ensure that `bash` is installed.
-   
-   1. If not, see instructions to install `bash` for [Windows 11](https://www.google.com.au/search?q=how+to+install+bash+windows+11&num=20&newwindow=1&udm=14) or [Windows 10](https://www.google.com.au/search?q=how+to+install+bash+windows+10&num=20&newwindow=1&udm=14) (not recommended to run on Windows 10). *See individual instructions for your Linux distro.*
+1. Download the repository
+2. Ensure that `bash` is installed via WSL2
+   1. Install [Windows Subsytem for Linux 2](https://learn.microsoft.com/en-us/windows/wsl/install) or run the following command on PowerShell and follow the instructions from there:
+      ``` powershell
+      wsl --install
+      ```
 
-2. Install Python (3.13 or greater) from [python.org/downloads](https://www.python.org/downloads/).
+3. Install Python (3.13 or greater) from [python.org/downloads](https://www.python.org/downloads/).
 
-3. Install the required dependencies in `bash` only:
-   ``` bash
+4. Restart Windows. *Optional PowerShell command below*:
+   ```
+   shutdown /g /soft
+   ```
+
+5. Install the required dependencies in `bash`:
+   ```bash
    # Pyinstaller is required
    pip install pyinstaller
    pip install -r requirements.txt
