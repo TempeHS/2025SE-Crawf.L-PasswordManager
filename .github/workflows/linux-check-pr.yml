@@ -22,8 +22,12 @@ jobs:
       - name: Install build essentials
         shell: bash
         run: |
-          sudo apt-get update || true
-          sudo apt-get install -y build-essential || true
+          if [[ "${{ matrix.os }}" == *"ubuntu"* ]]; then
+            sudo apt-get update || true
+            sudo apt-get install -y build-essential || true
+          elif [[ "${{ matrix.os }}" == *"fedora"* ]]; then
+            sudo dnf groupinstall -y "Development Tools" || true
+          fi
 
       - name: Set up Python
         
