@@ -1,4 +1,4 @@
-name: Build Executable
+name: Build Windows Executable
 
 on:
   push:
@@ -9,8 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    runs-on: windows-latest
+  check-build:
+    strategy:
+      matrix:
+      os: [windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -22,15 +25,17 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pyinstaller
 
       - name: Build executable
-        run: pyinstaller main.spec
+        shell: bash
+        run: pyinstaller --noconfirm --windowed main.py
 
-      - name: Upload artifact
+      - name: Upload artifact (${{ matrix.os }})
         uses: actions/upload-artifact@v4
         with:
-          name: windows-PassManaging-v_${{ github.sha }}
+          name: PassManaging-${{ matrix.os }}-v_${{ substr(github.sha, 0, 7) }}
           path: dist/
