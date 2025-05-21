@@ -12,7 +12,7 @@ jobs:
   check-build:
     strategy:
       matrix:
-      os: [fedora-latest, ubuntu-latest, ubuntu-24.04]
+        os: [fedora-latest, ubuntu-latest, ubuntu-24.04]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -39,6 +39,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           pip install pyinstaller
 
       - name: Test build executable
