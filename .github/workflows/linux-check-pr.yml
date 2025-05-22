@@ -40,7 +40,7 @@ jobs:
       - name: Build and test Fedora executable in Docker
         shell: bash
         run: |
-          docker run --rm --user $(id -u):$(id -g) -v ${{ github.workspace }}:/app -w /app fedora:latest bash -c "
+          docker run --rm -v ${{ github.workspace }}:/app -w /app fedora:latest bash -c "
             dnf install -y python3-pip python3-devel gcc make &&
             python3 -m pip install --upgrade pip &&
             pip3 install -r requirements.txt &&
