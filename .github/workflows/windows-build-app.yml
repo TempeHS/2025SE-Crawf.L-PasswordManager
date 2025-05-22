@@ -42,8 +42,9 @@ jobs:
       - name: Build executable
         run: pyinstaller --noconfirm --windowed main.py
 
-      - name: Upload artifact (${{ matrix.os }})
+      - name: Upload executable artifact (${{ matrix.runtime }})
         uses: actions/upload-artifact@v4
         with:
-          name: PassManaging-${{ matrix.os }}-v_${{ github.sha }}
+          name: build-${{ matrix.runtime }}-PR_${{ github.event.pull_request.number }}
           path: dist/
+
