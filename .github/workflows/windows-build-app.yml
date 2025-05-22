@@ -9,10 +9,19 @@ permissions:
   contents: read
 
 jobs:
-  check-build:
+  build:
     strategy:
       matrix:
-        os: [windows-latest]
+        runtime:
+          - win-x64
+          - win-arm64
+          
+        include:
+        - runtime: win-x64
+          os: windows-latest
+
+        - runtime: win-arm64
+          os: windows-latest
     runs-on: ${{ matrix.os }}
 
     steps:
