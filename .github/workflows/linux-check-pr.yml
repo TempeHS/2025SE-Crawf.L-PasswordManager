@@ -10,6 +10,9 @@ permissions:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        runtime: [linux-x64, linux-arm64]
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +37,7 @@ jobs:
       - name: Upload artifact (Ubuntu)
         uses: actions/upload-artifact@v4
         with:
-          name: PassManaging-ubuntu-PR_${{ github.event.pull_request.number }}
+          name: build-ubuntu-${{ matrix.runtime }}-PR_${{ github.event.pull_request.number }}
           path: dist/
 
       - name: Build and test Fedora executable in Docker
@@ -53,5 +56,5 @@ jobs:
       - name: Upload artifact (Fedora)
         uses: actions/upload-artifact@v4
         with:
-          name: PassManaging-fedora-PR_${{ github.event.pull_request.number }}
+          name: PassManaging-fedora-${{ matrix.runtime }}-PR_${{ github.event.pull_request.number }}
           path: dist/
