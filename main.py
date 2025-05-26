@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QMessageBox,
+    QSizePolicy,
 )
 import sys
 
@@ -28,7 +29,7 @@ class SimpleApp(QWidget):
         # Add an input field
         self.input_field = QLineEdit()
         self.input_field.setSizePolicy(
-            QLineEdit.sizePolicy.Expanding, QLineEdit.sizePolicy.Fixed
+            QSizePolicy.Expanding, QSizePolicy.Fixed  # Use QSizePolicy here
         )
         self.input_field.setTextMargins(
             0, 0, 0, 0
