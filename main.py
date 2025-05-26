@@ -29,7 +29,7 @@ class SimpleApp(QWidget):
         # Add an input field
         self.input_field = QLineEdit()
         self.input_field.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Fixed  # Use QSizePolicy here
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
         )
         self.input_field.setTextMargins(
             0, 0, 0, 0
