@@ -56,5 +56,5 @@ jobs:
       - name: Upload artifact (Fedora)
         uses: actions/upload-artifact@v4
         with:
-          name: build-fedora-${{ matrix.runtime }}-PR_${{ github.event.pull_request.number }}
+          name: PassManaging-fedora-${{ matrix.runtime }}-PR_${{ github.event.pull_request.number }}
           path: dist/
