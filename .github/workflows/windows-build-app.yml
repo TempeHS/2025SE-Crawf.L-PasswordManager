@@ -3,7 +3,7 @@ name: Build Windows Executable
 on:
   push:
     branches:
-      - main
+      - '**'   # Build on all branches
 
 permissions:
   contents: read
@@ -15,11 +15,9 @@ jobs:
         runtime:
           - win-x64
           - win-arm64
-          
         include:
         - runtime: win-x64
           os: windows-latest
-
         - runtime: win-arm64
           os: windows-latest
     runs-on: ${{ matrix.os }}
@@ -45,6 +43,5 @@ jobs:
       - name: Upload executable artifact (${{ matrix.runtime }})
         uses: actions/upload-artifact@v4
         with:
-          name: PassManaging-${{ matrix.runtime }}-v_${{ github.sha }}
+          name: PassManaging-${{ matrix.runtime }}${{ github.ref_name != 'main' && format('-{0}', github.ref_name) || '' }}--v_${{ github.sha }}
           path: dist/
-
