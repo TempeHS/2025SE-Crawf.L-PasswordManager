@@ -7,6 +7,16 @@ HASH_LEN_DEFAULT = 32
 SALT_LEN_DEFAULT = 16
 
 
+def MiB_to_KiB(mebi):
+    kibi = mebi * 1024
+    return kibi
+
+
+def GiB_to_KiB(gibi):
+    kibi = gibi * (1024**2)
+    return kibi
+
+
 class Argon2IDHasher:
 
     def __init__(
@@ -76,4 +86,4 @@ if __name__ == "__main__":
     hasher = Argon2IDHasher()
     hashed = hasher.hash("mysecretpassword")
     print(f"Hashed password: {hashed}")
-    print(f"Does the password match?: {hasher.verify(hashed, "mysecretpassword")}")
+    print(f"Does the password match?: {hasher.verify(hashed, 'mysecretpassword')}")
