@@ -1,19 +1,38 @@
 import argon2
 
+TIME_COST_DEFAULT = 2
+MEMORY_COST_DEFAULT = 102400
+PARALLELISM_DEFAULT = 8
+HASH_LEN_DEFAULT = 32
+SALT_LEN_DEFAULT = 16
+
 
 class Argon2IDHasher:
+
     def __init__(
-        self, time_cost=2, memory_cost=102400, parallelism=8, hash_len=32, salt_len=16
+        self,
+        time_cost: int = TIME_COST_DEFAULT,
+        memory_cost: int = MEMORY_COST_DEFAULT,
+        parallelism: int = PARALLELISM_DEFAULT,
+        hash_len: int = HASH_LEN_DEFAULT,
+        salt_len: int = SALT_LEN_DEFAULT,
     ):
         """
         Initialises the Argon2IDHasher with configurable parameters.
 
         Args:
-            time_cost (int, optional): _description_. Defaults to 2.
-            memory_cost (int, optional): _description_. Defaults to 102400.
-            parallelism (int, optional): _description_. Defaults to 8.
-            hash_len (int, optional): _description_. Defaults to 32.
-            salt_len (int, optional): _description_. Defaults to 16.
+            time_cost (int): The number of iterations to perform when hashing. Higher values increase computation time and security.
+                _Default_: 2 iterations
+            memory_cost (int): The amount of memory (in kibibytes) to use during hashing. Higher values increase security.
+                _Default_: 100 MiB
+            parallelism (int): The number of parallel threads to use for hashing.
+                _Default_: 8 threads
+            hash_len (int): The desired length of the resulting hash in bytes.
+                _Default_: 32 bytes
+            salt_len (int): The length of the random salt to use in bytes.
+                _Default_: 16 bytes
+
+        Sets up the internal Argon2ID PasswordHasher instance with the specified parameters.
         """
 
         self.ph = argon2.PasswordHasher(
