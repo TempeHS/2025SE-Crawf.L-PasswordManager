@@ -10,6 +10,8 @@ from PyQt6.QtWidgets import (
 )
 import sys
 
+import pyfiles.arg2id as arg2id
+
 
 class SimpleApp(QWidget):
     def __init__(self):
@@ -46,7 +48,11 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
-        QMessageBox.information(self, "Submitted", f"Submitted text: {text}")
+        ph = arg2id.Argon2IDHasher()
+        hashed = ph.hash(text)
+        QMessageBox.information(
+            self, "Submitted", f"Submitted text: {text}\nHashed password: {hashed}"
+        )
 
 
 if __name__ == "__main__":

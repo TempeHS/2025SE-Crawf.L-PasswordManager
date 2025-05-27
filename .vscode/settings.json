@@ -5,8 +5,12 @@
 	"github.copilot.chat.terminalChatLocation": "quickChat",
 	"editor.formatOnSave": false,
 	"editor.formatOnPaste": false,
-	// "[yaml]": {
-	// 	"editor.tabSize": 2,
-	// 	"editor.insertSpaces": true
-	// }
+	"github.copilot.enable": {
+		"*": true,
+		"plaintext": false,
+		"markdown": false,
+		"python": false,
+		"css": false,
+		"sql": false
+	}
 }
