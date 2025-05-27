@@ -58,5 +58,3 @@ if __name__ == "__main__":
     hashed = hasher.hash("mysecretpassword")
     print(f"Hashed password: {hashed}")
     print(f"Does the password match?: {hasher.verify(hashed, "mysecretpassword")}")
-
-# Example usage:
