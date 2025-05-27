@@ -1,18 +1,18 @@
 import argon2
 
-TIME_COST_DEFAULT = 2
-MEMORY_COST_DEFAULT = 102400
-PARALLELISM_DEFAULT = 8
-HASH_LEN_DEFAULT = 32
-SALT_LEN_DEFAULT = 16
+TIME_COST_DEFAULT: int = 2
+MEMORY_COST_DEFAULT: int = 102400
+PARALLELISM_DEFAULT: int = 8
+HASH_LEN_DEFAULT: int = 32
+SALT_LEN_DEFAULT: int = 16
 
 
-def MiB_to_KiB(mebi):
+def MiB_to_KiB(mebi: int):
     kibi = mebi * 1024
     return kibi
 
 
-def GiB_to_KiB(gibi):
+def GiB_to_KiB(gibi: int):
     kibi = gibi * (1024**2)
     return kibi
 
