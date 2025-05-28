@@ -48,8 +48,8 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
-        ph = arg2id.Argon2IDHasher()
-        hashed = ph.hash(text)
+        hasher = arg2id.Argon2IDHasher()
+        hashed = hasher.hash(text)
         QMessageBox.information(
             self, "Submitted", f"Submitted text: {text}\nHashed password: {hashed}"
         )

@@ -7,7 +7,7 @@ HASH_LEN_DEFAULT: int = 32
 SALT_LEN_DEFAULT: int = 16
 
 
-def MiB_to_KiB(mebi: int):
+def mib_to_kib(mebi: int):
     """
     Convert mebibytes (MiB) to kibibytes (KiB).
 
@@ -21,7 +21,7 @@ def MiB_to_KiB(mebi: int):
     return kibi
 
 
-def GiB_to_KiB(gibi: int):
+def gib_to_kib(gibi: int):
     """
     Convert gibibytes (GiB) to kibibytes (KiB).
 
@@ -82,7 +82,7 @@ class Argon2IDHasher:
         """
         return self.ph.hash(password)
 
-    def verify(self, hash: str, password: str) -> bool:
+    def verify(self, hash_str: str, password: str) -> bool:
         """
         Verifies if the provided password matches the given Argon2ID hash.
         Args:
@@ -94,7 +94,7 @@ class Argon2IDHasher:
         """
 
         try:
-            return self.ph.verify(hash, password)
+            return self.ph.verify(hash_str, password)
         except argon2.exceptions.VerifyMismatchError:
             return False
 
