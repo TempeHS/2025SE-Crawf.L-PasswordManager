@@ -8,11 +8,29 @@ SALT_LEN_DEFAULT: int = 16
 
 
 def MiB_to_KiB(mebi: int):
+    """
+    Convert mebibytes (MiB) to kibibytes (KiB).
+
+    Args:
+        mebi (int): The number of mebibytes to convert.
+
+    Returns:
+        int: The equivalent number of kibibytes.
+    """
     kibi = mebi * 1024
     return kibi
 
 
 def GiB_to_KiB(gibi: int):
+    """
+    Convert gibibytes (GiB) to kibibytes (KiB).
+
+    Args:
+        gibi (int): The number of gibibytes to convert.
+
+    Returns:
+        int: The equivalent number of kibibytes.
+    """
     kibi = gibi * (1024**2)
     return kibi
 
