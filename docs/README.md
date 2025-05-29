@@ -1,8 +1,6 @@
 # 2025SE-Crawf.L-PassManaging
 
 [![Build Windows Executable](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/windows-build-app.yml/badge.svg)](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/windows-build-app.yml)
-[![Build Linux Executable](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/linux-build-app.yml/badge.svg)](https://github.com/TempeHS/2025SE-Crawf.L-PassManaging/actions/workflows/linux-build-app.yml)
-
 
 Password manager for my major
 
@@ -18,13 +16,12 @@ Password manager for my major
 3. Install Python (3.13 or greater) from [python.org/downloads](https://www.python.org/downloads/).
 
 4. Restart Windows. *Optional PowerShell command below*:
-   ```
+   ``` powershell
    shutdown /g /soft
    ```
 
 5. Install the required dependencies in `bash`:
-   ```bash
-   # Pyinstaller is required
+   ``` bash
    pip install pyinstaller
    pip install -r requirements.txt
    ```
