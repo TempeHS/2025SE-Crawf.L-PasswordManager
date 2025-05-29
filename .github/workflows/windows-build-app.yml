@@ -50,5 +50,6 @@ jobs:
       - name: Upload executable artifact (${{ matrix.runtime }})
         uses: actions/upload-artifact@v4
         with:
+          # Use the branch name in the artifact name if not on main
           name: PassManaging-${{ matrix.runtime }}${{ github.ref_name != 'main' && format('-{0}', github.ref_name) || '' }}--v_${{ github.sha }}
           path: dist/
