@@ -6,13 +6,17 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QMessageBox,
+    QSizePolicy,
 )
 import sys
+
+import pyfiles.arg2id as arg2id
 
 
 class SimpleApp(QWidget):
     def __init__(self):
         super().__init__()
+        self.hasher = arg2id.Argon2IDHasher()
         self.init_ui()
 
     def init_ui(self):
@@ -28,7 +32,7 @@ class SimpleApp(QWidget):
         # Add an input field
         self.input_field = QLineEdit()
         self.input_field.setSizePolicy(
-            QLineEdit.sizePolicy.Expanding, QLineEdit.sizePolicy.Fixed
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
         )
         self.input_field.setTextMargins(
             0, 0, 0, 0
@@ -45,7 +49,10 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
-        QMessageBox.information(self, "Submitted", f"Submitted text: {text}")
+        hashed = self.hasher.hash(text)
+        QMessageBox.information(
+            self, "Submitted", f"Submitted text: {text}\nHashed password: {hashed}"
+        )
 
 
 if __name__ == "__main__":
