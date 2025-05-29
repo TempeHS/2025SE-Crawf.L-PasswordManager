@@ -40,7 +40,7 @@ jobs:
 
       - name: Test build executable
         run: |
-          pyinstaller --noconfirm --windowed main.py
+          pyinstaller --clean --noconfirm --windowed --onefile --debug all main.py
 
       - name: Upload executable artifact (${{ matrix.runtime }})
         uses: actions/upload-artifact@v4
