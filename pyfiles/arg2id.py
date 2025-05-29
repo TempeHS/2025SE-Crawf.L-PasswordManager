@@ -61,7 +61,19 @@ class Argon2IDHasher:
                 _Default_: 16 bytes
 
         Sets up the internal Argon2ID PasswordHasher instance with the specified parameters.
+        If any parameter is below its default value, it will be set to the default.
         """
+
+        if time_cost < TIME_COST_DEFAULT:
+            time_cost = TIME_COST_DEFAULT
+        if memory_cost < MEMORY_COST_DEFAULT:
+            memory_cost = MEMORY_COST_DEFAULT
+        if parallelism < 1:
+            parallelism = PARALLELISM_DEFAULT
+        if hash_len < 16:
+            hash_len = HASH_LEN_DEFAULT
+        if salt_len < 8:
+            salt_len = SALT_LEN_DEFAULT
 
         self.ph = argon2.PasswordHasher(
             time_cost=time_cost,
@@ -86,7 +98,7 @@ class Argon2IDHasher:
         """
         Verifies if the provided password matches the given Argon2ID hash.
         Args:
-            hash (str): The Argon2ID hash to verify against.
+            hash_str (str): The Argon2ID hash to verify against.
             password (str): The plaintext password to check.
 
         Returns:
