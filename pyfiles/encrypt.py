@@ -26,8 +26,11 @@ class AESFileEncryptor:
             type=argon2.low_level.Type.ID,
         )
 
-    def sha3_512_hash(self, filepath: str) -> str:
-        """Compute the SHA3-512 hash of a file."""
+    def _sha3_512_hash(self, filepath: str) -> str:
+        """
+        Compute the SHA3-512 hash of a file.
+        This is done in 4 KiB 'chunks' to handle large files efficiently.
+        """
         hasher = hashlib.sha3_512()
         with open(filepath, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
@@ -35,25 +38,46 @@ class AESFileEncryptor:
         return hasher.hexdigest()
 
     def encrypt_file(self, password: str, input_path: str, output_path: str):
-        """Encrypt a file using AES-256-CBC, storing salt, IV, and SHA3-512 hash at the start."""
-        salt = os.urandom(16)
-        key = self._derive_key(salt, password)
-        iv = os.urandom(16)
-        cipher = Cipher(
-            algorithm=algorithms.AES(key), mode=modes.CBC(iv), backend=default_backend()
-        )
-        file_hash = self.sha3_512_hash(input_path)
-        print(f"SHA3-512 hash of {input_path}: {file_hash:.12s}...")
-        encryptor = cipher.encryptor()
-        padder = padding.PKCS7(128).padder()
+        """Encrypt a file using AES-256-CBC, storing salt, IV, SHA3-512 hash, then ciphertext."""
+        try:
+            salt = os.urandom(16)
+            key = self._derive_key(salt, password)
+            iv = os.urandom(16)
+            cipher = Cipher(
+                algorithm=algorithms.AES(key),
+                mode=modes.CBC(iv),
+                backend=default_backend(),
+            )
+            file_hash = self._sha3_512_hash(input_path)
+            print(f"SHA3-512 hash of {input_path} (shortened): {file_hash:.12s}...")
+            encryptor = cipher.encryptor()
+            padder = padding.PKCS7(128).padder()
 
-        with open(input_path, "rb") as f:
-            plaintext = f.read()
-        padded_data = padder.update(plaintext) + padder.finalize()
-        ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+            try:
+                with open(input_path, "rb") as f:
+                    plaintext = f.read()
+            except FileNotFoundError:
+                raise FileNotFoundError(f"Input file not found: {input_path}")
+            except PermissionError:
+                raise PermissionError(f"Permission denied when reading: {input_path}")
+            except Exception as exc:
+                raise IOError(f"Failed to read input file: {input_path}") from exc
 
-        with open(output_path, "wb") as f:
-            f.write(salt + iv + ciphertext + bytes.fromhex(file_hash))  # Append hash
+            padded_data = padder.update(plaintext) + padder.finalize()
+            ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+
+            try:
+                with open(output_path, "wb") as f:
+                    # Write salt, IV, hash, then ciphertext
+                    f.write(salt + iv + bytes.fromhex(file_hash) + ciphertext)
+            except PermissionError:
+                raise PermissionError(f"Permission denied when writing: {output_path}")
+            except Exception as exc:
+                raise IOError(f"Failed to write output file: {output_path}") from exc
+
+        except Exception as exc:
+            print(f"Encryption failed: {exc}")
+            raise
 
     def decrypt_file(self, password: str, input_path: str, output_path: str):
         """Decrypt a file previously encrypted with this class and verify integrity.
@@ -62,36 +86,72 @@ class AESFileEncryptor:
             ValueError: If the password is incorrect, the file is corrupted, or the hash does not match.
         """
         try:
-            with open(input_path, "rb") as f:
-                data = f.read()
-            salt = data[:16]
-            iv = data[16:32]
-            ciphertext = data[32:-64]
-            # The last 64 bytes are the SHA3-512 hash (512 bits = 64 bytes)
-            file_hash_bytes = data[-64:]
-            key = self._derive_key(salt=salt, password=password)
-            cipher = Cipher(
-                algorithms.AES(key), modes.CBC(iv), backend=default_backend()
-            )
-            decryptor = cipher.decryptor()
-            padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
-            unpadder = padding.PKCS7(128).unpadder()
-            plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+            try:
+                with open(input_path, "rb") as f:
+                    salt = f.read(16)
+                    iv = f.read(16)
+                    file_hash_bytes = f.read(64)
+                    if len(salt) != 16 or len(iv) != 16 or len(file_hash_bytes) != 64:
+                        raise ValueError(
+                            "Encrypted file header is incomplete or corrupted."
+                        )
+                    key = self._derive_key(salt=salt, password=password)
+                    cipher = Cipher(
+                        algorithms.AES(key), modes.CBC(iv), backend=default_backend()
+                    )
+                    decryptor = cipher.decryptor()
+                    unpadder = padding.PKCS7(128).unpadder()
 
-            with open(output_path, "wb") as f:
-                f.write(plaintext)
+                    # Prepare for hash verification
+                    hasher = hashlib.sha3_512()
 
-            # Verify hash
-            computed_hash = hashlib.sha3_512(plaintext).digest()
-            print(f"Computed hash: {computed_hash.hex():.12s}...")
-            if computed_hash == file_hash_bytes:
-                print(f"File integrity check passed: SHA3-512 hash matches.")
-            else:
-                raise ValueError(
-                    "File integrity check failed: SHA3-512 hash does not match."
-                )
+                    # Decrypt in chunks
+                    buffer = b""
+                    chunk_size = 4096
+                    try:
+                        with open(output_path, "wb") as outf:
+                            while True:
+                                chunk = f.read(chunk_size)
+                                if not chunk:
+                                    break
+                                decrypted = decryptor.update(chunk)
+                                buffer += decrypted
+                                # Only keep the last block in buffer for padding removal
+                                while len(buffer) > 16:
+                                    outf.write(buffer[:16])
+                                    hasher.update(buffer[:16])
+                                    buffer = buffer[16:]
+                            # Finalise decryption and remove padding
+                            buffer += decryptor.finalize()
+                            unpadded = unpadder.update(buffer) + unpadder.finalize()
+                            outf.write(unpadded)
+                            hasher.update(unpadded)
+                    except PermissionError:
+                        raise PermissionError(
+                            f"Permission denied when writing: {output_path}"
+                        )
+                    except Exception as exc:
+                        raise IOError(
+                            f"Failed to write output file: {output_path}"
+                        ) from exc
+
+                    computed_hash = hasher.digest()
+                    print(f"Computed hash (shortened): {computed_hash.hex():.12s}...")
+                    if computed_hash == file_hash_bytes:
+                        print("File integrity check passed: SHA3-512 hash matches.")
+                    else:
+                        raise ValueError(
+                            "File integrity check failed: SHA3-512 hash does not match."
+                        )
+            except FileNotFoundError:
+                raise FileNotFoundError(f"Encrypted file not found: {input_path}")
+            except PermissionError:
+                raise PermissionError(f"Permission denied when reading: {input_path}")
+            except Exception as exc:
+                raise IOError(f"Failed to read encrypted file: {input_path}") from exc
 
         except (ValueError, Exception) as e:
+            print(f"Decryption failed: {e}")
             raise ValueError(
                 "Decryption failed: the password may be incorrect, the file may be corrupted, or the hash does not match."
             ) from e
@@ -110,6 +170,9 @@ if __name__ == "__main__":
         except FileNotFoundError:
             print(f"File not found or doesn't exist: {file_path}")
             pass
+
+    # Pause for 500 milliseconds before starting encryption/decryption
+    time.sleep(0.5)
 
     start_encrypt = time.time()
     fe.encrypt_file(
