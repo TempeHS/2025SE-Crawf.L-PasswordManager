@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
 import sys
 
 import pyfiles.arg2id as arg2id
+import pyfiles.encrypt as encrypt
 
 
 class SimpleApp(QWidget):
