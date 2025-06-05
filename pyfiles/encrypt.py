@@ -19,8 +19,8 @@ class AESFileEncryptor:
         return argon2.low_level.hash_secret_raw(
             secret=password.encode(),
             salt=salt,
-            time_cost=8,
-            memory_cost=524288,  # 512 MiB
+            time_cost=20,
+            memory_cost=131072,  # 128 MiB
             parallelism=4,
             hash_len=32,
             type=argon2.low_level.Type.ID,
@@ -39,6 +39,8 @@ class AESFileEncryptor:
 
     def encrypt_file(self, password: str, input_path: str, output_path: str):
         """Encrypt a file using AES-256-CBC in chunks, storing salt, IV, SHA3-512 hash, then ciphertext."""
+        if not password:
+            raise ValueError("Password must not be empty for encryption.")
         try:
             salt = os.urandom(16)
             key = self._derive_key(salt, password)
@@ -54,7 +56,9 @@ class AESFileEncryptor:
             padder = padding.PKCS7(128).padder()
 
             try:
-                with open(input_path, "rb") as infile, open(output_path, "wb") as outfile:
+                with open(input_path, "rb") as infile, open(
+                    output_path, "wb"
+                ) as outfile:
                     # Write salt, IV, and hash first
                     outfile.write(salt + iv + bytes.fromhex(file_hash))
                     chunk_size = 4096
@@ -77,9 +81,13 @@ class AESFileEncryptor:
             except FileNotFoundError:
                 raise FileNotFoundError(f"Input file not found: {input_path}")
             except PermissionError:
-                raise PermissionError(f"Permission denied when reading or writing: {input_path} or {output_path}")
+                raise PermissionError(
+                    f"Permission denied when reading or writing: {input_path} or {output_path}"
+                )
             except Exception as exc:
-                raise IOError(f"Failed to process files: {input_path}, {output_path}") from exc
+                raise IOError(
+                    f"Failed to process files: {input_path}, {output_path}"
+                ) from exc
 
         except Exception as exc:
             print(f"Encryption failed: {exc}")
@@ -87,10 +95,11 @@ class AESFileEncryptor:
 
     def decrypt_file(self, password: str, input_path: str, output_path: str):
         """Decrypt a file previously encrypted with this class in chunks and verify integrity.
-
         Raises:
             ValueError: If the password is incorrect, the file is corrupted, or the hash does not match.
         """
+        if not password:
+            raise ValueError("Password must not be empty for decryption.")
         try:
             try:
                 with open(input_path, "rb") as infile:
@@ -128,7 +137,15 @@ class AESFileEncryptor:
                                     buffer = buffer[16:]
                             # Finalise decryption and remove padding
                             buffer += decryptor.finalize()
-                            unpadded = unpadder.update(buffer) + unpadder.finalize()
+                            try:
+                                unpadded = unpadder.update(buffer) + unpadder.finalize()
+                            except ValueError as ve:
+                                print(
+                                    "Decryption failed: incorrect password or file is corrupted (invalid padding)."
+                                )
+                                raise ValueError(
+                                    "Decryption failed: the password may be incorrect, or the file may be corrupted or tampered with."
+                                ) from ve
                             outf.write(unpadded)
                             hasher.update(unpadded)
                     except PermissionError:
@@ -136,6 +153,9 @@ class AESFileEncryptor:
                             f"Permission denied when writing: {output_path}"
                         )
                     except Exception as exc:
+                        # Only wrap non-ValueError exceptions
+                        if isinstance(exc, ValueError):
+                            raise
                         raise IOError(
                             f"Failed to write output file: {output_path}"
                         ) from exc
@@ -153,15 +173,14 @@ class AESFileEncryptor:
             except PermissionError:
                 raise PermissionError(f"Permission denied when reading: {input_path}")
             except Exception as exc:
+                # Only wrap non-ValueError exceptions
                 if isinstance(exc, ValueError):
-                    raise  # Re-raise ValueError to preserve its type and message
+                    raise
                 raise IOError(f"Failed to read encrypted file: {input_path}") from exc
 
         except ValueError as e:
-            print(f"Decryption failed due to a value error: {e}")
-            raise ValueError(
-                "Decryption failed: the password may be incorrect, the file may be corrupted, or the hash does not match."
-            ) from e
+            print(f"Decryption failed: {e}")
+            raise
         except Exception as e:
             print(f"Decryption failed due to an unexpected error: {e}")
             raise RuntimeError(
@@ -188,7 +207,7 @@ if __name__ == "__main__":
 
     start_encrypt = time.time()
     fe.encrypt_file(
-        password=r"Testing",
+        password=r".",
         input_path=r"./pyfiles/.testing/pyinstall_help.txt",
         output_path=r"./pyfiles/.testing/pyinstall_help.txt.bin",
     )
@@ -197,7 +216,7 @@ if __name__ == "__main__":
 
     start_decrypt = time.time()
     fe.decrypt_file(
-        password=r"Testing",
+        password=r".",
         input_path=r"./pyfiles/.testing/pyinstall_help.txt.bin",
         output_path=r"./pyfiles/.testing/pyinstalled_help.txt",
     )
