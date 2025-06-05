@@ -38,7 +38,7 @@ class AESFileEncryptor:
         return hasher.hexdigest()
 
     def encrypt_file(self, password: str, input_path: str, output_path: str):
-        """Encrypt a file using AES-256-CBC, storing salt, IV, SHA3-512 hash, then ciphertext."""
+        """Encrypt a file using AES-256-CBC in chunks, storing salt, IV, SHA3-512 hash, then ciphertext."""
         try:
             salt = os.urandom(16)
             key = self._derive_key(salt, password)
@@ -54,43 +54,49 @@ class AESFileEncryptor:
             padder = padding.PKCS7(128).padder()
 
             try:
-                with open(input_path, "rb") as f:
-                    plaintext = f.read()
+                with open(input_path, "rb") as infile, open(output_path, "wb") as outfile:
+                    # Write salt, IV, and hash first
+                    outfile.write(salt + iv + bytes.fromhex(file_hash))
+                    chunk_size = 4096
+                    finished = False
+                    while not finished:
+                        chunk = infile.read(chunk_size)
+                        if len(chunk) == 0:
+                            finished = True
+                            # Finalise padding and encryption for the last block
+                            padded = padder.finalize()
+                            if padded:
+                                ciphertext = encryptor.update(padded)
+                                outfile.write(ciphertext)
+                            outfile.write(encryptor.finalize())
+                        else:
+                            padded = padder.update(chunk)
+                            if padded:
+                                ciphertext = encryptor.update(padded)
+                                outfile.write(ciphertext)
             except FileNotFoundError:
                 raise FileNotFoundError(f"Input file not found: {input_path}")
             except PermissionError:
-                raise PermissionError(f"Permission denied when reading: {input_path}")
+                raise PermissionError(f"Permission denied when reading or writing: {input_path} or {output_path}")
             except Exception as exc:
-                raise IOError(f"Failed to read input file: {input_path}") from exc
-
-            padded_data = padder.update(plaintext) + padder.finalize()
-            ciphertext = encryptor.update(padded_data) + encryptor.finalize()
-
-            try:
-                with open(output_path, "wb") as f:
-                    # Write salt, IV, hash, then ciphertext
-                    f.write(salt + iv + bytes.fromhex(file_hash) + ciphertext)
-            except PermissionError:
-                raise PermissionError(f"Permission denied when writing: {output_path}")
-            except Exception as exc:
-                raise IOError(f"Failed to write output file: {output_path}") from exc
+                raise IOError(f"Failed to process files: {input_path}, {output_path}") from exc
 
         except Exception as exc:
             print(f"Encryption failed: {exc}")
             raise
 
     def decrypt_file(self, password: str, input_path: str, output_path: str):
-        """Decrypt a file previously encrypted with this class and verify integrity.
+        """Decrypt a file previously encrypted with this class in chunks and verify integrity.
 
         Raises:
             ValueError: If the password is incorrect, the file is corrupted, or the hash does not match.
         """
         try:
             try:
-                with open(input_path, "rb") as f:
-                    salt = f.read(16)
-                    iv = f.read(16)
-                    file_hash_bytes = f.read(64)
+                with open(input_path, "rb") as infile:
+                    salt = infile.read(16)
+                    iv = infile.read(16)
+                    file_hash_bytes = infile.read(64)
                     if len(salt) != 16 or len(iv) != 16 or len(file_hash_bytes) != 64:
                         raise ValueError(
                             "Encrypted file header is incomplete or corrupted."
@@ -105,13 +111,12 @@ class AESFileEncryptor:
                     # Prepare for hash verification
                     hasher = hashlib.sha3_512()
 
-                    # Decrypt in chunks
                     buffer = b""
                     chunk_size = 4096
                     try:
                         with open(output_path, "wb") as outf:
                             while True:
-                                chunk = f.read(chunk_size)
+                                chunk = infile.read(chunk_size)
                                 if not chunk:
                                     break
                                 decrypted = decryptor.update(chunk)
