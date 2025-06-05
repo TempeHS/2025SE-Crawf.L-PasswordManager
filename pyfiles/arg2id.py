@@ -1,8 +1,8 @@
 import argon2
 
-TIME_COST_DEFAULT: int = 2
-MEMORY_COST_DEFAULT: int = 262144
-PARALLELISM_DEFAULT: int = 8
+TIME_COST_DEFAULT: int = 32
+MEMORY_COST_DEFAULT: int = 131072  # 128 MiB
+PARALLELISM_DEFAULT: int = 4
 HASH_LEN_DEFAULT: int = 32
 SALT_LEN_DEFAULT: int = 16
 
@@ -50,11 +50,11 @@ class Argon2IDHasher:
 
         Args:
             time_cost (int): The number of iterations to perform when hashing. Higher values increase computation time and security.
-                _Default_: 2 iterations
+                _Default_: 32 iterations
             memory_cost (int): The amount of memory (in kibibytes) to use during hashing. Higher values increase security.
-                _Default_: 256 MiB
+                _Default_: 128 MiB
             parallelism (int): The number of parallel threads to use for hashing.
-                _Default_: 8 threads
+                _Default_: 4 threads
             hash_len (int): The desired length of the resulting hash in bytes.
                 _Default_: 32 bytes
             salt_len (int): The length of the random salt to use in bytes.
