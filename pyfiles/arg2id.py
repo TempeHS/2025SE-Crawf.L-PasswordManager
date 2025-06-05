@@ -52,7 +52,7 @@ class Argon2IDHasher:
             time_cost (int): The number of iterations to perform when hashing. Higher values increase computation time and security.
                 _Default_: 2 iterations
             memory_cost (int): The amount of memory (in mibibytes) to use during hashing. Higher values increase security.
-                _Default_: 256 MiB
+                _Default_: 512 MiB
             parallelism (int): The number of parallel threads to use for hashing.
                 _Default_: 8 threads
             hash_len (int): The desired length of the resulting hash in bytes.
