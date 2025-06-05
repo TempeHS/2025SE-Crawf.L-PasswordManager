@@ -58,7 +58,7 @@ class SimpleApp(QWidget):
         QMessageBox.information(
             self,
             "Submitted",
-            f"Submitted text: {text}\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds:",
+            f"Submitted text: {text}\n\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds",
         )
 
 
