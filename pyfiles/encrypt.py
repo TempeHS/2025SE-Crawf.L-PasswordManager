@@ -150,10 +150,15 @@ class AESFileEncryptor:
             except Exception as exc:
                 raise IOError(f"Failed to read encrypted file: {input_path}") from exc
 
-        except (ValueError, Exception) as e:
-            print(f"Decryption failed: {e}")
+        except ValueError as e:
+            print(f"Decryption failed due to a value error: {e}")
             raise ValueError(
                 "Decryption failed: the password may be incorrect, the file may be corrupted, or the hash does not match."
+            ) from e
+        except Exception as e:
+            print(f"Decryption failed due to an unexpected error: {e}")
+            raise RuntimeError(
+                "Decryption failed due to an unexpected error. Please check the input files and try again."
             ) from e
 
 
