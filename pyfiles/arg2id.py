@@ -51,7 +51,7 @@ class Argon2IDHasher:
         Args:
             time_cost (int): The number of iterations to perform when hashing. Higher values increase computation time and security.
                 _Default_: 8 iterations
-            memory_cost (int): The amount of memory (in mibibytes) to use during hashing. Higher values increase security.
+            memory_cost (int): The amount of memory (in kibibytes) to use during hashing. Higher values increase security.
                 _Default_: 512 MiB
             parallelism (int): The number of parallel threads to use for hashing.
                 _Default_: 4 threads
@@ -81,6 +81,7 @@ class Argon2IDHasher:
             parallelism=parallelism,
             hash_len=hash_len,
             salt_len=salt_len,
+            type=argon2.low_level.Type.ID,
         )
 
     def hash(self, password: str) -> str:
