@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
 )
 import sys
+import time
 
 import pyfiles.arg2id as arg2id
 import pyfiles.encrypt as encrypt
@@ -50,9 +51,14 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
+        start_time = time.time()
         hashed = self.hasher.hash(text)
+        end_time = time.time()
+        elapsed = end_time - start_time
         QMessageBox.information(
-            self, "Submitted", f"Submitted text: {text}\nHashed password: {hashed}"
+            self,
+            "Submitted",
+            f"Submitted text: {text}\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds:",
         )
 
 
