@@ -153,6 +153,8 @@ class AESFileEncryptor:
             except PermissionError:
                 raise PermissionError(f"Permission denied when reading: {input_path}")
             except Exception as exc:
+                if isinstance(exc, ValueError):
+                    raise  # Re-raise ValueError to preserve its type and message
                 raise IOError(f"Failed to read encrypted file: {input_path}") from exc
 
         except ValueError as e:
