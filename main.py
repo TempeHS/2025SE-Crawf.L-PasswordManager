@@ -14,11 +14,14 @@ import time
 import pyfiles.arg2id as arg2id
 import pyfiles.encrypt as encrypt
 
+PATH_TO_FILE: str = r"./help.txt"
+
 
 class SimpleApp(QWidget):
     def __init__(self):
         super().__init__()
         self.hasher = arg2id.Argon2IDHasher()
+        self.encryptor = encrypt.AESFileEncryptor()
         self.init_ui()
 
     def init_ui(self):
@@ -51,6 +54,7 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
+        self.raw_password = self.input_field.text()
         start_time = time.time()
         hashed = self.hasher.hash(text)
         end_time = time.time()
@@ -59,6 +63,16 @@ class SimpleApp(QWidget):
             self,
             "Submitted",
             f"Submitted text: {text}\n\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds",
+        )
+
+    def encode(self, password: str):
+        self.encryptor.encrypt_file(
+            password=password, input_path=PATH_TO_FILE, output_path=r"./help.txt.bin"
+        )
+        self.encryptor.decrypt_file(
+            password=password,
+            input_path=r"./help.txt.bin",
+            output_path=r"./help_de.txt",
         )
 
 
