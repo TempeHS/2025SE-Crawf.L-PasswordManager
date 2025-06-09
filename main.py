@@ -51,22 +51,6 @@ class SimpleApp(QWidget):
         # Set the layout for the main window
         self.setLayout(layout)
 
-    def show_dialog(self):
-        text = self.input_field.text()
-        self.raw_password = self.input_field.text()
-        start_time = time.time()
-        try:
-            hashed = self.hasher.hash(text)
-            end_time = time.time()
-            elapsed = end_time - start_time
-            QMessageBox.information(
-                self,
-                "Submitted",
-                f"Submitted text: {text}\n\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds",
-            )
-        except Exception as exc:
-            self.show_error(str(exc))
-
     def encode(self, password: str):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         input_path = os.path.join(base_dir, "help.txt")
@@ -92,6 +76,22 @@ class SimpleApp(QWidget):
     def show_error(self, message):
         """Display errors in a message box."""
         QMessageBox.critical(self, "Error", message)
+
+    def show_dialog(self):
+        text = self.input_field.text()
+        self.raw_password = self.input_field.text()
+        start_time = time.time()
+        try:
+            hashed = self.hasher.hash(text)
+            end_time = time.time()
+            elapsed = end_time - start_time
+            QMessageBox.information(
+                self,
+                "Submitted",
+                f"Submitted text: {text}\n\nHashed password: {hashed}\n\nHashing took {elapsed:.3f} seconds",
+            )
+        except Exception as exc:
+            self.show_error(str(exc))
 
 
 if __name__ == "__main__":
