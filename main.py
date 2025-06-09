@@ -10,11 +10,10 @@ from PyQt6.QtWidgets import (
 )
 import sys
 import time
+import os
 
 import pyfiles.arg2id as arg2id
 import pyfiles.encrypt as encrypt
-
-PATH_TO_FILE: str = r"./help.txt"
 
 
 class SimpleApp(QWidget):
@@ -66,13 +65,19 @@ class SimpleApp(QWidget):
         )
 
     def encode(self, password: str):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        input_path = os.path.join(base_dir, "help.txt")
+        encrypted_path = os.path.join(base_dir, "help.txt.bin")
+        decrypted_path = os.path.join(base_dir, "help_de.txt")
         self.encryptor.encrypt_file(
-            password=password, input_path=PATH_TO_FILE, output_path=r"./help.txt.bin"
+            password=password,
+            input_path=input_path,
+            output_path=encrypted_path,
         )
         self.encryptor.decrypt_file(
             password=password,
-            input_path=r"./help.txt.bin",
-            output_path=r"./help_de.txt",
+            input_path=encrypted_path,
+            output_path=decrypted_path,
         )
 
 
