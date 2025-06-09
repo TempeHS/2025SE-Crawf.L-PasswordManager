@@ -79,7 +79,8 @@ class SimpleApp(QWidget):
 
     def show_dialog(self):
         text = self.input_field.text()
-        self.raw_password = self.input_field.text()
+        self.raw_password = text
+        self.encode(password=text)
         start_time = time.time()
         try:
             hashed = self.hasher.hash(text)
