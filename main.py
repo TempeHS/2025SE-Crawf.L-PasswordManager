@@ -18,7 +18,7 @@ import pyfiles.encrypt as encrypt
 
 def resource_path(relative_path):
     """Get the absolute path to a resource, works for dev and for PyInstaller bundle."""
-    if hasattr(sys, '_MEIPASS'):
+    if hasattr(sys, "_MEIPASS"):
         # If running as a PyInstaller bundle
         base_path = sys._MEIPASS
     else:
