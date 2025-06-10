@@ -9,7 +9,10 @@ pip install -r requirements.txt --upgrade
 # clear all files in 'dist/' directory
 rm ./dist/*
 
-
+# Remove the ./dist/main directory if it exists
+if [ -d "./dist/main" ]; then
+	rm -rf ./dist/main
+fi
 
 # Create a executable (for testing purposes)
 pyinstaller --clean --noconfirm --debug all --noconsole main.py
