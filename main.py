@@ -16,6 +16,16 @@ import pyfiles.arg2id as arg2id
 import pyfiles.encrypt as encrypt
 
 
+def resource_path(relative_path):
+    """Get the absolute path to a resource, works for dev and for PyInstaller bundle."""
+    if hasattr(sys, '_MEIPASS'):
+        # If running as a PyInstaller bundle
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
+
+
 class SimpleApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -52,10 +62,9 @@ class SimpleApp(QWidget):
         self.setLayout(layout)
 
     def encode(self, password: str):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        input_path = os.path.join(base_dir, "help.txt")
-        encrypted_path = os.path.join(base_dir, "help.txt.bin")
-        decrypted_path = os.path.join(base_dir, "help_de.txt")
+        input_path = resource_path("help.txt")
+        encrypted_path = resource_path("help.txt.bin")
+        decrypted_path = resource_path("help_de.txt")
         try:
             self.encryptor.encrypt_file(
                 password=password,
