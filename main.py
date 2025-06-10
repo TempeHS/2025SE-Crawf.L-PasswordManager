@@ -26,6 +26,14 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+def user_data_path(filename):
+    """Get a path for user data files in the user's home directory."""
+    home_dir = os.path.expanduser("~")
+    app_dir = os.path.join(home_dir, ".simple_app_data")
+    os.makedirs(app_dir, exist_ok=True)
+    return os.path.join(app_dir, filename)
+
+
 class SimpleApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -63,8 +71,8 @@ class SimpleApp(QWidget):
 
     def encode(self, password: str):
         input_path = resource_path("help.txt")
-        encrypted_path = resource_path("help.txt.bin")
-        decrypted_path = resource_path("help_de.txt")
+        encrypted_path = user_data_path("help.txt.bin")
+        decrypted_path = user_data_path("help_de.txt")
         try:
             self.encryptor.encrypt_file(
                 password=password,
