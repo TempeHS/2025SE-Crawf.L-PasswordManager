@@ -15,11 +15,10 @@ class AESFileEncryptor:
 
     def _derive_key(self, salt: bytes, password: str) -> bytes:
         """Derive a 256-bit key from the password and salt using Argon2ID."""
-        # These parameters should match your security requirements
         return argon2.low_level.hash_secret_raw(
             secret=password.encode(),
             salt=salt,
-            time_cost=20,
+            time_cost=14,
             memory_cost=131072,  # 128 MiB
             parallelism=4,
             hash_len=32,
@@ -100,7 +99,9 @@ class AESFileEncryptor:
         """
         if not password:
             raise ValueError("Password must not be empty for decryption.")
+        # If file encryption fails and others
         try:
+            # if error occurs when reading file
             try:
                 with open(input_path, "rb") as infile:
                     salt = infile.read(16)
