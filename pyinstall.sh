@@ -9,6 +9,10 @@ pip install -r requirements.txt --upgrade
 # clear all files in 'dist/' directory
 rm ./dist/*
 
+
+pyinstaller --add-data "help.txt;." main.py
+
+
 # Remove the ./dist/main directory if it exists
 if [ -d "./dist/main" ]; then
 	rm -rf ./dist/main
